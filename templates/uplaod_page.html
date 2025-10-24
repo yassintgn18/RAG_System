@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Document</title>
+</head>
+<body>
+    <h1>Upload a Document</h1>
+    <form id="uploadForm">
+        <input type="file" name="document" id="document" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData();
+            const fileInput = document.getElementById('document');
+            formData.append('document', fileInput.files[0]);
+
+            fetch('/upload_documents_for_admin', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => {
+                alert("An error occurred.");
+                console.error(error);
+            });
+        });
+    </script>
+</body>
+</html>

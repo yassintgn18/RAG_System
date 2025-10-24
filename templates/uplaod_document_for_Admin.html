@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PDF and Word File Analysis</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    .upload-container {
+      border: 2px dashed #007bff;
+      border-radius: 10px;
+      padding: 40px;
+      text-align: center;
+      background-color: #f8f9fa;
+    }
+    .upload-btn {
+      background-color: #007bff;
+      color: white;
+      border-radius: 5px;
+      padding: 10px 20px;
+      font-size: 18px;
+      border: none;
+    }
+    .upload-btn:hover {
+      background-color: #0056b3;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      padding: 10px;
+      background-color: #f8f9fa;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container my-5">
+    <div class="row justify-content-center">
+      <div class="col-12 text-center">
+        <h1 class="display-4 text-primary">PDF and Word File Analysis</h1>
+        <p class="lead">Upload your document and we’ll extract its content for you!</p>
+      </div>
+
+      <div class="col-md-8 col-12">
+        <div class="upload-container">
+          <h3><i class="bi bi-file-earmark-arrow-up"></i> Upload PDF or DOCX File</h3>
+          <input type="file" class="form-control mb-4" accept=".pdf,.docx" id="fileInput">
+          <button class="upload-btn" onclick="uploadFile()">Upload</button>
+          
+          
+          <div class="mt-4">
+            <h5 id="responseMessage" class="text-success"></h5>
+            <pre id="chunkDisplay" class="text-start text-dark" style="white-space: pre-wrap;"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>&copy; 2025 Your Company. All rights reserved.</p>
+  </div>
+
+  <!-- Bootstrap JS and Popper.js -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+  <script>
+    function uploadFile() {
+      const fileInput = document.getElementById('fileInput');
+      const file = fileInput.files[0];
+
+      if (!file) {
+        alert("Please select a file to upload.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('document', file);
+
+      fetch('/upload_documents_for_admin', {
+    method: 'POST',
+    body: formData
+})
+.then(response => {
+    if (response.redirected) {
+        window.location.href = response.url; // <-- THIS redirects to /ask
+    } else {
+        return response.json();
+    }
+})
+.then(data => {
+    if (data) {
+        const responseEl = document.getElementById('responseMessage');
+        const chunkDisplay = document.getElementById('chunkDisplay');
+
+        if (data.error) {
+            responseEl.textContent = "Error: " + data.error;
+            chunkDisplay.textContent = "";
+        } else {
+            responseEl.textContent = data.message;
+            chunkDisplay.textContent = data.first_chunk;
+        }
+    }
+})
+.catch(error => {
+    alert("Upload failed.");
+    console.error("Error:", error);
+});
+
+    }
+  </script>
+
+</body>
+</html>

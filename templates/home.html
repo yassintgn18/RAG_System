@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maintenance AI Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-blue-900 text-white py-6 shadow">
+    <div class="container mx-auto px-4 flex justify-between items-center">
+        <h1 class="text-3xl font-bold">Maintenance AI Assistant</h1>
+        <nav>
+            <a href="#" class="mx-2 hover:underline">Home</a>
+            <a href="{{ url_for('home_page') }}" class="mx-2 hover:underline">Upload</a>
+            
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('ask_question') }}" class="mx-2 hover:underline">Chatbot</a>
+            {% endif %}
+            
+            <a href="{{ url_for('login') }}" class="mx-2 hover:underline">Login</a>
+        </nav>
+    </div>
+</header>
+
+
+    <!-- Hero Section -->
+    <section class="bg-white py-20">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-4xl font-bold mb-4 text-blue-800">Smarter Maintenance Starts Here</h2>
+            <p class="text-lg mb-8 max-w-xl mx-auto">
+                Upload equipment manuals, extract key technical info instantly, and get accurate answers via an AI chatbot.
+                Reduce search time and boost your team’s efficiency.
+            </p>
+            <a href="{{ url_for('home_page') }}" class="bg-blue-700 text-white px-6 py-3 rounded-lg hover:bg-blue-800 transition">
+                Try the Chatbot
+            </a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-16 bg-gray-100">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-3 gap-10 text-center">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold mb-2 text-blue-700">Document Upload</h3>
+                    <p>Upload PDFs and DOCX manuals. The system reads and stores technical content securely.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold mb-2 text-blue-700">AI Chatbot</h3>
+                    <p>Ask natural language questions about equipment, specifications, or troubleshooting.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold mb-2 text-blue-700">Knowledge Centralization</h3>
+                    <p>Access extracted data from all documents in one place – no more endless searching.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-blue-900 text-white py-6 mt-10">
+        <div class="container mx-auto px-4 text-center">
+            &copy; 2025 Maintenance AI Assistant. All rights reserved.
+        </div>
+    </footer>
+
+</body>
+</html>

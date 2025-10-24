@@ -1,0 +1,274 @@
+{% block content %}
+<!-- Flash Messages -->
+{% for message in get_flashed_messages() %}
+<div class="alert alert-warning alert-dismissible fade show mt-3 mx-auto w-75" role="alert" style="z-index: 100;">
+    <center>{{ message }}</center>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+
+<!-- Main Content -->
+<div class="container my-5">
+    <h3 class="text-center text-primary mb-5">Database Information</h3>
+
+    <style>
+        .table-container {
+            margin-bottom: 50px;
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .table th,
+        .table td {
+            vertical-align: middle;
+        }
+
+        .table thead {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .card-container .card {
+            margin: 20px auto;
+        }
+
+        h1 {
+            font-size: 26px;
+            color: #343a40;
+            font-weight: bold;
+        }
+    </style>
+
+    <!-- Table Sections -->
+    {% set tables = {
+        'Roles Information': roles,
+        'Users Information': users,
+        'Documents Information': documents,
+        'Equipment Information': equipment,
+        'Chat Queries Information': queries,
+        'Logs Information': logs,
+        'Tasks Information': tasks
+    } %}
+
+    <!-- Roles Table -->
+    <div class="table-container">
+        <h1>Roles Information</h1>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Role ID</th>
+                        <th>Role Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for role in roles %}
+                    <tr>
+                        <td>{{ role.role_id }}</td>
+                        <td>{{ role.role_name }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="table-container">
+        <h1>Users Information</h1>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>password</th>
+                        <th>Role ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.user_id }}</td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.password }}</td>
+                        <td>{{ user.role_id }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Add the same kind of structure for the rest of your tables (Documents, Equipment, Queries, Logs, Tasks) -->
+    <!-- Example: Documents Table -->
+    <div class="table-container">
+        <h1>Documents Information</h1>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Document ID</th>
+                        <th>Title</th>
+                        <th>File Path</th>
+                        <th>Uploaded By</th>
+                        <th>Upload Date</th>
+                        <th>Permanent</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for doc in documents %}
+                    <tr>
+                        <td>{{ doc.document_id }}</td>
+                        <td>{{ doc.title }}</td>
+                        <td>{{ doc.file_path }}</td>
+                        <td>{{ doc.uploaded_by }}</td>
+                        <td>{{ doc.upload_date }}</td>
+                        <td>{{ doc.permanent }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Repeat similar blocks for: Equipment, Queries, Logs, Tasks -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Chat Queries Table -->
+<div class="table-container">
+    <h1>Chat Queries Information</h1>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Query ID</th>
+                    <th>User ID</th>
+                    <th>Query Text</th>
+                    <th>Response Text</th>
+                    <th>Created At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for query in queries %}
+                <tr>
+                    <td>{{ query.query_id }}</td>
+                    <td>{{ query.user_id }}</td>
+                    <td>{{ query.query_text }}</td>
+                    <td>{{ query.response_text }}</td>
+                    <td>{{ query.created_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- Logs Table -->
+<div class="table-container">
+    <h1>Logs Information</h1>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Log ID</th>
+                    <th>User ID</th>
+                    <th>Action</th>
+                    <th>Timestamp</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>{{ log.log_id }}</td>
+                    <td>{{ log.user_id }}</td>
+                    <td>{{ log.action }}</td>
+                    <td>{{ log.timestamp }}</td>
+                    <td>{{ log.details }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Tasks Table -->
+<div class="table-container">
+    <h1>Tasks Information</h1>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Task ID</th>
+                    <th>Equipment ID</th>
+                    <th>Assigned To</th>
+                    <th>Assigned By</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+                    <th>Completed At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                <tr>
+                    <td>{{ task.task_id }}</td>
+                    <td>{{ task.equipment_id }}</td>
+                    <td>{{ task.assigned_to }}</td>
+                    <td>{{ task.assigned_by }}</td>
+                    <td>{{ task.task_description }}</td>
+                    <td>{{ task.status }}</td>
+                    <td>{{ task.created_at }}</td>
+                    <td>{{ task.completed_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+    <!-- Equipment Cards -->
+    <div class="card-container">
+        <h1 class="text-center mb-4">Equipment Cards</h1>
+        <div class="row justify-content-center">
+            {% for item in equipment %}
+            <div class="col-md-6">
+                <div class="card text-white bg-dark mb-4 shadow-lg" style="border-radius: 20px;">
+                    <div class="card-header fs-4 fw-bold" style="font-family: cursive;">{{ item.name }}</div>
+                    <div class="card-body">
+                        <h5 class="card-title" style="font-family: sans-serif;">Type: {{ item.type }}</h5>
+                        <p class="card-text" style="font-family: sans-serif;">
+                            Location: {{ item.location }}<br>
+                            Serial Number: {{ item.serial_number }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock content %}

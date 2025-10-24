@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Feedback</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        .highlight-changes {
+            background-color: #e8f4ff;
+            border-left: 3px solid #0d6efd;
+            padding: 8px;
+            transition: all 0.3s ease;
+        }
+        .query-card {
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            transition: transform 0.2s;
+        }
+        .query-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+        .response-container {
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #f8f9fa;
+        }
+        .feedback-header {
+            background-color: #6c757d;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-radius: 0 0 10px 10px;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="feedback-header">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1><i class="fas fa-robot me-2"></i> Chatbot Feedback Dashboard</h1>
+                <a href="{{ url_for('admin') }}" class="btn btn-light">
+                    <i class="fas fa-home"></i> Back to Admin Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-info-circle"></i> How It Works</h5>
+                        <p class="card-text">When you update a chatbot response, the corrected answer is saved to the vector database. 
+                        This ensures that similar questions in the future will receive your improved response. Updates are reflected immediately.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>Recent Queries</h2>
+                <span class="badge bg-primary">{{ queries|length }} Total Queries</span>
+            </div>
+            <hr>
+        </div>
+
+        {% if queries %}
+            {% for query in queries %}
+                <div class="card query-card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Query #{{ query.query_id }}</h5>
+                        <span class="badge bg-secondary">{{ query.user.name }} ({{ query.user.role.role_name }})</span>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-question-circle text-primary"></i> User Query
+                        </h5>
+                        <p class="card-text">{{ query.query_text }}</p>
+                        
+                        <hr>
+                        
+                        <h5 class="card-title">
+                            <i class="fas fa-robot text-success"></i> Chatbot Response
+                        </h5>
+                        
+                        <div class="response-container highlight-changes">
+                            <form action="{{ url_for('update_response_and_index', query_id=query.query_id) }}" method="POST">
+                                <div class="mb-3">
+                                    <textarea class="form-control" name="response_text" rows="4" required>{{ query.response_text }}</textarea>
+                                </div>
+                                <div class="action-buttons">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i> Update & Index Response
+                                    </button>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteQueryModal{{ query.query_id }}">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card-footer text-muted">
+                        <small>
+                            <i class="fas fa-calendar"></i> 
+                            {% if query.timestamp %}
+                                {{ query.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}
+                            {% else %}
+                                Unknown time
+                            {% endif %}
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Delete Query Modal -->
+                <div class="modal fade" id="deleteQueryModal{{ query.query_id }}" tabindex="-1" aria-labelledby="deleteQueryModalLabel{{ query.query_id }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteQueryModalLabel{{ query.query_id }}">Confirm Deletion</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to delete the query <strong>{{ query.query_text }}</strong>?</p>
+                                <p class="text-danger"><small>This action cannot be undone.</small></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <form action="{{ url_for('delete_query', query_id=query.query_id) }}" method="POST">
+                                    <button type="submit" class="btn btn-danger">Delete Query</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> No queries have been recorded yet.
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Bootstrap JS and Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

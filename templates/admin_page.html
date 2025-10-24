@@ -1,0 +1,76 @@
+<!-- templates/admin_page.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 2rem;
+        }
+        h1 {
+            text-align: center;
+        }
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .card {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            transition: box-shadow 0.2s ease;
+        }
+        .card:hover {
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+        }
+        .card a {
+            text-decoration: none;
+            color: #007BFF;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Admin Dashboard</h1>
+    <div class="dashboard">
+
+        <div class="card">
+            <h3>📄 Upload Datasheets</h3>
+            <p>Upload PDF or DOCX equipment manuals.</p>
+            <a href="{{ url_for('upload_documents') }}">Upload</a>
+        </div>
+
+        <div class="card">
+            <h3>👥 Manage Users</h3>
+            <p>View, edit, or assign roles to users.</p>
+            <a href="{{ url_for('manage_users') }}">Manage</a>
+        </div>
+
+        <div class="card">
+            <h3>📊 Query Logs</h3>
+            <p>Review user chatbot interactions and questions.</p>
+            <a href="{{ url_for('view_query_logs') }}">View Logs</a>
+        </div>
+
+        <div class="card">
+            <h3>📁 Bulk Upload</h3>
+            <p>Upload multiple manuals to update the knowledge base.</p>
+            <a href="{{ url_for('bulk_upload') }}">Bulk Upload</a>
+        </div>
+
+        <div class="card">
+            <h3>🧠 Improve Chatbot</h3>
+            <p>Review and fix incorrect responses from chatbot.</p>
+            <a href="{{ url_for('chatbot_feedback') }}">Review Responses</a>
+        </div>
+
+    </div>
+</body>
+</html>
